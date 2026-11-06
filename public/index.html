@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#14245A">
+<title>GMC Academy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/htm@3.1.1/dist/htm.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<style>
+:root{
+  --bg:#F4F6FB;--bg2:#EAF0FA;--card:#FFFFFF;--ink:#0F1A3A;--mut:#5E6A88;--line:#E3E8F2;--field:#FFFFFF;
+  --navy:#14245A;--navy2:#22408F;--navy3:#0B1640;--gold:#E3A81F;--gold2:#F6C85A;
+  --teal:#0FA394;--teal2:#34D1A6;--tealbg:#DDF5EE;--tealt:#0B6B5E;
+  --ok:#0B6B5E;--okbg:#DDF5EE;--bad:#9B2C1C;--badbg:#FBE4DF;--gbg:#FCF1D6;--gt:#6B4A00;--gray:#EBEEF5;--grayt:#2B3350;
+  --sh1:0 1px 2px rgba(15,26,58,.05),0 2px 8px rgba(15,26,58,.04);
+  --sh2:0 2px 4px rgba(15,26,58,.04),0 10px 30px -8px rgba(15,26,58,.14);
+  --sh3:0 18px 50px -12px rgba(11,22,64,.35);
+  --r:18px;--rs:14px;--ease:cubic-bezier(.2,.8,.2,1);
+  --navh:72px;
+}
+@media (prefers-color-scheme:dark){:root{
+  color-scheme:dark;--bg:#0A1024;--bg2:#0E1630;--card:#131C38;--ink:#EEF1FA;--mut:#98A3C3;--line:#243055;--field:#0F1730;
+  --navy:#1C2F72;--navy2:#2A4AA8;--navy3:#0A1235;
+  --tealbg:#0F3530;--tealt:#7FE3C7;--ok:#7FE3C7;--okbg:#0F3530;--bad:#F6A99B;--badbg:#3E1D19;--gbg:#3A2F10;--gt:#F5D27C;--gray:#1F2A4B;--grayt:#C9D0E8;
+  --sh1:0 1px 2px rgba(0,0,0,.3);--sh2:0 10px 30px -10px rgba(0,0,0,.6);--sh3:0 18px 50px -12px rgba(0,0,0,.7);
+}}
+*{box-sizing:border-box}
+html,body,#root{min-height:100%}
+body{margin:0;color:var(--ink);font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;
+  background:radial-gradient(1200px 600px at 100% -10%,rgba(15,163,148,.08),transparent 60%),radial-gradient(900px 500px at -10% 0%,rgba(227,168,31,.07),transparent 55%),var(--bg);background-attachment:fixed}
+h1,h2,.big,.stat b,.brand{font-family:'Outfit','Plus Jakarta Sans',sans-serif}
+a{color:var(--teal);font-weight:600;text-decoration:none}
+a:hover{text-decoration:underline}
+.ic{flex:0 0 auto;display:block}
+
+/* ---------- Shell ---------- */
+.page{min-height:100vh;display:flex;flex-direction:column}
+.hdr{position:sticky;top:0;z-index:20;color:#fff;padding:max(12px,env(safe-area-inset-top)) 18px 12px;display:flex;justify-content:space-between;align-items:center;gap:10px;
+  background:linear-gradient(120deg,var(--navy3),var(--navy) 45%,var(--navy2));box-shadow:0 6px 24px -10px rgba(11,22,64,.6)}
+.hdr::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--gold2) 40%,var(--teal2))}
+.brand{display:flex;align-items:center;gap:12px;font-size:19px;font-weight:700;letter-spacing:.02em;line-height:1.1}
+.brand small{display:block;font-family:'Plus Jakarta Sans',sans-serif;font-size:10.5px;font-weight:700;letter-spacing:.16em;color:var(--gold2);margin-top:3px}
+.mark{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;color:var(--navy3);background:linear-gradient(140deg,var(--gold2),var(--gold));box-shadow:0 6px 16px -6px rgba(227,168,31,.8),inset 0 1px 0 rgba(255,255,255,.5)}
+.link{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);color:#fff;font:inherit;font-size:13px;font-weight:600;border-radius:999px;min-height:38px;padding:0 14px;cursor:pointer;transition:background .2s}
+.link:hover{background:rgba(255,255,255,.16)}
+.main{flex:1;width:100%;max-width:880px;margin:0 auto;padding:20px 16px calc(var(--navh) + 36px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:14px}
+.main>*{animation:rise .45s var(--ease) both}
+.main>*:nth-child(2){animation-delay:.04s}.main>*:nth-child(3){animation-delay:.08s}.main>*:nth-child(4){animation-delay:.12s}.main>*:nth-child(5){animation-delay:.16s}.main>*:nth-child(n+6){animation-delay:.2s}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+
+nav{position:fixed;z-index:30;left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));display:flex;gap:4px;padding:6px;border-radius:22px;
+  background:color-mix(in srgb,var(--card) 88%,transparent);backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);border:1px solid var(--line);box-shadow:var(--sh3)}
+nav button{flex:1;min-height:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:none;border:0;border-radius:16px;font:inherit;font-size:11.5px;font-weight:600;color:var(--mut);cursor:pointer;transition:background .25s var(--ease),color .25s}
+nav button:hover{color:var(--ink)}
+nav button.on{color:#fff;background:linear-gradient(140deg,var(--navy),var(--navy2));box-shadow:0 8px 18px -8px rgba(20,36,90,.8)}
+nav button.on .ic{color:var(--gold2)}
+@media (min-width:960px){
+  .page{display:grid;grid-template-columns:260px 1fr;grid-template-rows:auto 1fr;grid-template-areas:"hdr hdr" "nav main"}
+  .hdr{grid-area:hdr;padding:14px 28px}
+  .main{grid-area:main;padding:28px 32px 48px;max-width:960px}
+  nav{grid-area:nav;position:sticky;top:96px;align-self:start;left:auto;right:auto;bottom:auto;margin:28px 0 0 20px;flex-direction:column;gap:6px;padding:10px;border-radius:20px;box-shadow:var(--sh2);background:var(--card)}
+  nav button{flex-direction:row;justify-content:flex-start;gap:12px;min-height:50px;padding:0 16px;font-size:14.5px}
+  nav button:not(.on):hover{background:var(--gray)}
+}
+
+/* ---------- Typography ---------- */
+h2{margin:0;font-size:22px;font-weight:700;letter-spacing:-.01em}
+.card h2{font-size:19px}
+h3{display:flex;align-items:center;gap:8px;margin:0 0 4px;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--mut)}
+h3::before{content:"";width:16px;height:3px;border-radius:3px;background:linear-gradient(90deg,var(--teal),var(--teal2))}
+.hint{color:var(--mut);font-size:13.5px;margin:0}
+.opt{font-weight:500;color:var(--mut)}
+.big{font-size:34px;font-weight:800;letter-spacing:.02em;background:linear-gradient(120deg,var(--navy2),var(--teal));-webkit-background-clip:text;background-clip:text;color:transparent}
+@media (prefers-color-scheme:dark){.big{background:linear-gradient(120deg,var(--gold2),var(--teal2));-webkit-background-clip:text;background-clip:text}}
+.eyebrow{margin:0;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold2)}
+.sec-title{display:flex;align-items:center;justify-content:space-between;margin-top:8px}
+
+/* ---------- Cards ---------- */
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;box-shadow:var(--sh1)}
+.card.stack{gap:10px}
+.row{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.item{cursor:pointer;text-align:left;width:100%;font:inherit;color:inherit;transition:transform .25s var(--ease),box-shadow .25s var(--ease),border-color .25s}
+.card.item:hover{transform:translateY(-2px);box-shadow:var(--sh2);border-color:color-mix(in srgb,var(--teal) 35%,var(--line))}
+.card.item:active{transform:translateY(0) scale(.995)}
+.card.item .hint{margin-top:4px}
+.who{display:flex;align-items:center;gap:12px;min-width:0}
+.av{flex:0 0 auto;display:grid;place-items:center;width:40px;height:40px;border-radius:13px;font-style:normal;font-family:'Outfit',sans-serif;font-weight:700;font-size:14px;letter-spacing:.03em;color:#fff;background:linear-gradient(140deg,var(--navy2),var(--teal))}
+.av.lg{width:60px;height:60px;border-radius:18px;font-size:21px;box-shadow:0 10px 24px -10px rgba(15,163,148,.7)}
+.person .row~*{padding-left:52px}
+.profile-hero{position:relative;overflow:hidden;padding:20px}
+.profile-hero::before{content:"";position:absolute;inset:0 0 auto 0;height:5px;background:linear-gradient(90deg,var(--navy),var(--gold) 50%,var(--teal))}
+
+.hero{position:relative;overflow:hidden;border-radius:24px;padding:24px 22px;color:#fff;display:flex;flex-direction:column;gap:16px;
+  background:linear-gradient(135deg,var(--navy3),var(--navy) 50%,var(--navy2));box-shadow:var(--sh3)}
+.hero::before,.hero::after{content:"";position:absolute;border-radius:50%;filter:blur(10px);pointer-events:none}
+.hero::before{width:260px;height:260px;right:-80px;top:-110px;background:radial-gradient(circle,rgba(246,200,90,.45),transparent 65%)}
+.hero::after{width:300px;height:300px;left:30%;bottom:-200px;background:radial-gradient(circle,rgba(52,209,166,.35),transparent 65%)}
+.hero>*{position:relative;z-index:1}
+.hero h1{margin:4px 0 2px;font-size:28px;font-weight:700;letter-spacing:-.01em}
+.hero p.sub{margin:0;color:rgba(255,255,255,.72);font-size:14px}
+@media (min-width:640px){.hero{flex-direction:row;align-items:center;justify-content:space-between;padding:28px 30px}.hero .btn{width:auto;padding:0 22px}}
+
+/* ---------- Stats ---------- */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid.five>:first-child{grid-column:1/-1}
+@media (min-width:640px){.grid.five{grid-template-columns:repeat(5,1fr)}.grid.five>:first-child{grid-column:auto}}
+.stat{position:relative;overflow:hidden;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;box-shadow:var(--sh1);transition:transform .25s var(--ease),box-shadow .25s}
+.stat:hover{transform:translateY(-2px);box-shadow:var(--sh2)}
+.stat::after{content:"";position:absolute;right:-30px;top:-30px;width:90px;height:90px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--teal) 14%,transparent),transparent 70%)}
+.stat b{display:block;font-size:30px;font-weight:700;line-height:1.1;letter-spacing:-.02em}
+.stat span{font-size:13px;color:var(--mut);font-weight:500}
+.si{display:grid;place-items:center;width:36px;height:36px;border-radius:11px;margin-bottom:12px;font-style:normal;background:var(--tealbg);color:var(--tealt)}
+.si.g{background:var(--gbg);color:var(--gt)}.si.n{background:color-mix(in srgb,var(--navy2) 14%,transparent);color:var(--navy2)}
+@media (prefers-color-scheme:dark){.si.n{color:#9DB4FF}}
+
+/* ---------- Buttons ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:50px;border-radius:var(--rs);border:1px solid transparent;font:inherit;font-weight:700;font-size:15.5px;padding:0 18px;width:100%;cursor:pointer;color:#fff;
+  background:linear-gradient(140deg,var(--navy),var(--navy2));box-shadow:0 8px 20px -10px rgba(20,36,90,.7),inset 0 1px 0 rgba(255,255,255,.12);transition:transform .2s var(--ease),box-shadow .2s,filter .2s}
+.btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 12px 26px -10px rgba(20,36,90,.75);filter:brightness(1.06)}
+.btn:active:not(:disabled){transform:translateY(0) scale(.985)}
+.btn.sec{background:var(--card);color:var(--ink);border-color:var(--line);box-shadow:var(--sh1)}
+.btn.sec:hover:not(:disabled){border-color:color-mix(in srgb,var(--teal) 45%,var(--line));box-shadow:var(--sh2);filter:none}
+.btn.gold{background:linear-gradient(140deg,var(--gold2),var(--gold));color:#1B1606;font-weight:800;box-shadow:0 10px 24px -10px rgba(227,168,31,.85),inset 0 1px 0 rgba(255,255,255,.45)}
+.btn.small{min-height:44px;font-size:14px;padding:0 14px;border-radius:12px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.back{align-self:flex-start;width:auto;padding:0 14px 0 8px}
+.btns{display:flex;gap:8px;flex-wrap:wrap}
+.btns .btn{flex:1}
+.seg{background:var(--gray);padding:5px;border-radius:16px;gap:4px;flex-wrap:nowrap;overflow-x:auto}
+.seg .btn{min-height:40px;font-size:13.5px;box-shadow:none;border:0;white-space:nowrap}
+.seg .btn.sec{background:transparent;color:var(--mut)}
+.seg .btn.sec:hover:not(:disabled){background:color-mix(in srgb,var(--card) 60%,transparent);box-shadow:none;color:var(--ink)}
+.seg .btn:not(.sec){background:var(--card);color:var(--ink);box-shadow:var(--sh1)}
+.stick{position:sticky;bottom:calc(var(--navh) + 22px + env(safe-area-inset-bottom));z-index:5}
+@media (min-width:960px){.stick{bottom:18px}}
+
+/* ---------- Forms ---------- */
+form,.stack{display:flex;flex-direction:column;gap:14px}
+.field{width:100%;min-height:50px;border:1.5px solid var(--line);border-radius:var(--rs);padding:0 14px;font:inherit;font-size:16px;background:var(--field);color:var(--ink);transition:border-color .2s,box-shadow .2s;-webkit-appearance:none;appearance:none}
+.field::placeholder{color:color-mix(in srgb,var(--mut) 75%,transparent)}
+.field:hover{border-color:color-mix(in srgb,var(--mut) 40%,var(--line))}
+.field:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 4px color-mix(in srgb,var(--teal) 20%,transparent)}
+select.field{padding-right:40px;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%238390AE' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
+.field.search{padding-left:44px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%238390AE' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.5-3.5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:16px center}
+input[type=date].field{-webkit-appearance:auto;appearance:auto}
+.label{display:block;margin-bottom:6px;font-size:13.5px;font-weight:700;color:var(--ink)}
+main form>h2,.main>form>h2{font-size:24px}
+.main>form{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:22px 18px;box-shadow:var(--sh2)}
+@media (min-width:640px){.main>form{padding:28px}}
+.main>form>h3{margin-top:10px;padding-top:16px;border-top:1px dashed var(--line)}
+.main>form>h3:first-of-type{border-top:0;padding-top:0}
+
+/* ---------- Chips, alerts, rows ---------- */
+.chip{display:inline-flex;align-items:center;gap:5px;margin:4px 6px 0 0;padding:4px 11px;border-radius:999px;font-size:12px;font-weight:700;letter-spacing:.01em;background:var(--gray);color:var(--grayt);white-space:nowrap}
+.chip.ok{background:var(--okbg);color:var(--ok)}.chip.gold{background:var(--gbg);color:var(--gt)}.chip.bad{background:var(--badbg);color:var(--bad)}
+.chip.ok::before,.chip.bad::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.err,.warn{padding:12px 14px;border-radius:var(--rs);font-size:14px;font-weight:600;animation:rise .3s var(--ease) both}
+.err{background:var(--badbg);color:var(--bad);border:1px solid color-mix(in srgb,var(--bad) 22%,transparent)}
+.warn{background:var(--tealbg);color:var(--tealt);border:1px solid color-mix(in srgb,var(--teal) 25%,transparent)}
+.kv{display:flex;justify-content:space-between;gap:14px;padding:11px 0;border-bottom:1px solid var(--line)}
+.kv:last-child{border-bottom:0}
+.kv span:first-child{color:var(--mut);font-size:14px}
+.kv span:last-child,.kv a{font-weight:600;text-align:right;word-break:break-word}
+.srow{display:grid;grid-template-columns:1fr 100px;gap:8px 10px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.srow:last-child{border-bottom:0}
+.srow .field{min-height:46px;text-align:right;font-weight:700}
+.srow .rm{grid-column:1 / -1}
+.srow .rm .field{text-align:left;font-weight:500}
+.pct{font-size:12px;color:var(--mut);font-weight:500}
+.sr{position:absolute;left:-9999px}
+button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
+.boot{min-height:100vh;display:grid;place-content:center;justify-items:center;gap:14px}
+.spin{width:40px;height:40px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--gold);border-right-color:var(--teal);animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ---------- Login ---------- */
+.login{min-height:100vh;display:flex;flex-direction:column}
+.login-art{position:relative;overflow:hidden;color:#fff;padding:calc(44px + env(safe-area-inset-top)) 26px 64px;background:linear-gradient(150deg,var(--navy3),var(--navy) 50%,var(--navy2))}
+.login-art::before{content:"";position:absolute;width:420px;height:420px;right:-160px;top:-160px;border-radius:50%;background:radial-gradient(circle,rgba(246,200,90,.42),transparent 62%)}
+.login-art::after{content:"";position:absolute;width:420px;height:420px;left:-180px;bottom:-240px;border-radius:50%;background:radial-gradient(circle,rgba(52,209,166,.35),transparent 62%)}
+.login-art>*{position:relative;z-index:1}
+.login-art .mark{width:58px;height:58px;border-radius:18px}
+.login-art h1{margin:22px 0 4px;font-size:38px;font-weight:800;letter-spacing:-.01em;line-height:1.05}
+.login-art .tag{margin:0;font-size:12px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gold2)}
+.lede{margin:18px 0 0;max-width:420px;color:rgba(255,255,255,.75);font-size:15px}
+.perks{display:none;list-style:none;margin:32px 0 0;padding:0;flex-direction:column;gap:12px}
+.perks li{display:flex;align-items:center;gap:12px;font-size:14.5px;font-weight:500;color:rgba(255,255,255,.9)}
+.perks i{display:grid;place-items:center;width:34px;height:34px;border-radius:11px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);color:var(--teal2)}
+.login-pane{flex:1;display:flex;justify-content:center;padding:0 16px 32px;margin-top:-36px;position:relative;z-index:2}
+.login-form{width:100%;max-width:420px;align-self:flex-start;background:var(--card);border:1px solid var(--line);border-radius:24px;padding:26px 22px;box-shadow:var(--sh3);animation:rise .5s var(--ease) both}
+.login-form h2{font-size:24px}
+.lock{display:inline-flex;align-items:center;gap:6px;align-self:flex-start;padding:5px 11px;border-radius:999px;background:var(--tealbg);color:var(--tealt);font-size:12px;font-weight:700}
+@media (min-width:900px){
+  .login{flex-direction:row}
+  .login-art{flex:1.1;display:flex;flex-direction:column;justify-content:center;padding:64px 72px}
+  .login-art h1{font-size:52px}
+  .perks{display:flex}
+  .login-pane{flex:1;margin:0;align-items:center;padding:40px}
+  .login-form{align-self:center;padding:36px 34px}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+const { useState, useEffect, useCallback } = React
+const html = htm.bind(React.createElement)
+// The publishable key is designed to be public. Access is controlled by database rules (only the two administrators).
+const sb = supabase.createClient('https://ohpqhpoyenjpwhsygqlx.supabase.co', 'sb_publishable_YjtptY01owef8zbwLynm1A_v7RFZfsJ')
+const PHONE = /^[+0-9 ()-]{7,20}$/, EMAIL = /^[^@\s]+@[^@\s]+\.[^@\s]+$/, GPS = /^[A-Z]{2,3}-[0-9]{3,4}-[0-9]{4}$/
+const STATUSES = ['Registered', 'Active', 'Completed', 'Withdrawn']
+const norm = s => s.trim().replace(/\s+/g, ' ').toLowerCase()
+const tidyGps = s => s.trim().replace(/\s+/g, '-').toUpperCase()
+const ageOf = dob => { const d = new Date(dob); if (isNaN(d.getTime())) return null; const t = new Date(); let a = t.getFullYear() - d.getFullYear(); const m = t.getMonth() - d.getMonth(); if (m < 0 || (m === 0 && t.getDate() < d.getDate())) a--; return a >= 0 ? a : null }
+const fmtDate = d => new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+const tel = p => 'tel:' + p.replace(/[^+\d]/g, '')
+const statusClass = s => s === 'Active' ? 'ok' : s === 'Registered' ? 'gold' : s === 'Withdrawn' ? 'bad' : ''
+
+const ICONS = {
+  home: '<path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+  users: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
+  userPlus: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/>',
+  clip: '<rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/>',
+  logout: '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>',
+  back: '<path d="m15 18-6-6 6-6"/>',
+  cap: '<path d="M22 10 12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>',
+  layers: '<path d="m12 2 10 5-10 5L2 7z"/><path d="m2 17 10 5 10-5M2 12l10 5 10-5"/>',
+  pulse: '<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>',
+  shield: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/>',
+  lock: '<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+  chart: '<path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-6"/>',
+}
+const Icon = ({ n, s = 20 }) => html`<svg class="ic" width=${s} height=${s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" dangerouslySetInnerHTML=${{ __html: ICONS[n] }} />`
+const ini = n => (n || '').split(/\s+/).filter(Boolean).slice(0, 2).map(w => w[0]).join('').toUpperCase()
+
+// ---------- Services ----------
+const Auth = {
+  async signIn(email, password) {
+    const { data, error } = await sb.auth.signInWithPassword({ email, password })
+    if (error || !data.session) throw new Error('Wrong email or password. Check them and try again.')
+    return data.session
+  },
+  signOut: () => sb.auth.signOut(),
+  // The database decides who is an administrator; this only reads the answer.
+  async isAdmin() { const { data } = await sb.from('gmc_admins').select('user_id').maybeSingle(); return !!data },
+}
+const toRow = f => ({
+  full_name: f.fullName.trim(), gender: f.gender, date_of_birth: f.dob, shs_name: f.shsName.trim(), shs_level: Number(f.shsLevel),
+  residential_address: f.address.trim(), gps_address: tidyGps(f.gps), student_phone: f.phone.trim(), student_email: f.email.trim() || null,
+  guardian_name: f.gName.trim(), guardian_relationship: f.gRel, guardian_phone: f.gPhone.trim(), guardian_alt_phone: f.gAlt.trim() || null, guardian_email: f.gEmail.trim() || null,
+})
+const toForm = s => ({
+  fullName: s.full_name, gender: s.gender, dob: s.date_of_birth, shsName: s.shs_name, shsLevel: String(s.shs_level), address: s.residential_address, gps: s.gps_address,
+  phone: s.student_phone, email: s.student_email || '', gName: s.guardian_name, gRel: s.guardian_relationship, gPhone: s.guardian_phone, gAlt: s.guardian_alt_phone || '', gEmail: s.guardian_email || '',
+})
+const Students = {
+  async list() { const { data, error } = await sb.from('gmc_students').select('*').order('created_at', { ascending: false }); if (error) throw error; return data || [] },
+  async create(f) {
+    const { data, error } = await sb.from('gmc_students').insert(toRow(f)).select('id, reg_id').single()
+    if (error) throw new Error(error.code === '23505' ? 'This student is already registered (same name and date of birth). Returning students are not registered again.' : error.message)
+    return data
+  },
+  async update(id, patch) { const { error } = await sb.from('gmc_students').update(patch).eq('id', id); if (error) throw new Error(error.code === '23505' ? 'Another student already has this name and date of birth.' : error.message) },
+  async setStatus(id, status) { return Students.update(id, { registration_status: status }) },
+  async edit(id, f) { return Students.update(id, toRow(f)) },
+}
+
+const KINDS = ['Test', 'Assignment', 'Exercise']
+const kindClass = k => k === 'Test' ? 'bad' : k === 'Assignment' ? 'gold' : 'ok'
+const n2 = v => { const n = Number(v); return Number.isInteger(n) ? String(n) : n.toFixed(2).replace(/0$/, '') }
+const pct = (score, max) => Math.round((Number(score) / Number(max)) * 1000) / 10
+// Tests, assignments and exercises are stored in the site's own database, behind the administrator sign-in.
+async function api(path, opts = {}) {
+  const { data } = await sb.auth.getSession()
+  const r = await fetch('/api/records/' + path, { ...opts, headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + (data.session ? data.session.access_token : '') } })
+  const body = await r.json().catch(() => ({}))
+  if (!r.ok) throw new Error(body.error || 'Something went wrong. Please try again.')
+  return body
+}
+const Records = {
+  list: () => api('assessments'),
+  create: a => api('assessments', { method: 'POST', body: JSON.stringify(a) }),
+  update: (id, a) => api('assessments/' + id, { method: 'PUT', body: JSON.stringify(a) }),
+  remove: id => api('assessments/' + id, { method: 'DELETE' }),
+  scores: id => api('assessments/' + id + '/scores'),
+  saveScores: (id, scores) => api('assessments/' + id + '/scores', { method: 'PUT', body: JSON.stringify({ scores }) }),
+  forStudent: sid => api('students/' + encodeURIComponent(sid) + '/scores'),
+}
+
+// ---------- Screens ----------
+function Login({ onSignedIn, notice }) {
+  const [email, setEmail] = useState(''), [password, setPassword] = useState(''), [show, setShow] = useState(false), [error, setError] = useState(notice || ''), [busy, setBusy] = useState(false)
+  async function submit(e) { e.preventDefault(); setError(''); setBusy(true); try { await onSignedIn(await Auth.signIn(email.trim(), password)) } catch (err) { setError(err.message) } finally { setBusy(false) } }
+  return html`<div class="login">
+    <aside class="login-art"><div class="mark"><${Icon} n="cap" s=${30} /></div>
+      <h1>GMC Academy</h1><p class="tag">SHS Vacation Classes</p>
+      <p class="lede">Student registration, profiles, tests, assignments and scores, all in one place.</p>
+      <ul class="perks"><li><i><${Icon} n="users" s=${18} /></i>Student registration and profiles</li><li><i><${Icon} n="chart" s=${18} /></i>Tests, assignments and exercise scores</li><li><i><${Icon} n="shield" s=${18} /></i>Restricted to authorised administrators</li></ul></aside>
+    <main class="login-pane"><form class="login-form" onSubmit=${submit}>
+      <span class="lock"><${Icon} n="lock" s=${14} />Secure access</span>
+      <div><h2>Administrator sign in</h2><p class="hint" style=${{ marginTop: '4px' }}>Only the two authorised administrators can sign in.</p></div>
+      ${error && html`<div class="err" role="alert">${error}</div>`}
+      <div><label class="label" htmlFor="email">Email</label><input id="email" class="field" type="email" autoComplete="username" inputMode="email" required value=${email} onChange=${e => setEmail(e.target.value)} /></div>
+      <div><label class="label" htmlFor="password">Password</label><div class="btns" style=${{ flexWrap: 'nowrap' }}><input id="password" class="field" type=${show ? 'text' : 'password'} autoComplete="current-password" required value=${password} onChange=${e => setPassword(e.target.value)} />
+        <button type="button" class="btn sec" style=${{ width: 'auto', flex: '0 0 auto' }} aria-pressed=${show} onClick=${() => setShow(!show)}>${show ? 'Hide' : 'Show'}</button></div></div>
+      <button class="btn gold" disabled=${busy}>${busy ? 'Signing in…' : 'Sign in'}</button>
+    </form></main></div>`
+}
+
+function Dashboard({ rows, open, go }) {
+  const c = l => rows.filter(s => s.shs_level === l).length
+  const stats = [['Total registered', rows.length], ['SHS 1', c(1)], ['SHS 2', c(2)], ['SHS 3', c(3)], ['Active', rows.filter(s => s.registration_status === 'Active').length]]
+  const icons = [['users', 'n'], ['layers', ''], ['layers', ''], ['layers', ''], ['pulse', 'g']]
+  const h = new Date().getHours(), greet = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening'
+  return html`<${React.Fragment}>
+    <section class="hero"><div><p class="eyebrow">${greet}</p><h1>Dashboard</h1><p class="sub">${new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</p></div>
+      <button class="btn gold" onClick=${() => go('form')}><${Icon} n="plus" s=${18} />Register a student</button></section>
+    <div class="grid five">${stats.map(([l, n], i) => html`<div key=${l} class="stat"><i class=${'si ' + icons[i][1]}><${Icon} n=${icons[i][0]} s=${18} /></i><b>${n}</b><span>${l}</span></div>`)}</div>
+    <div class="sec-title"><h2>Recently registered</h2><button class="btn sec small" style=${{ width: 'auto' }} onClick=${() => go('students')}>View all</button></div>
+    ${!rows.length && html`<p class="hint">No students registered yet.</p>`}
+    ${rows.slice(0, 5).map(s => html`<button key=${s.id} class="card item person" onClick=${() => open(s.id)}><div class="row"><span class="who"><i class="av">${ini(s.full_name)}</i><b>${s.full_name}</b></span><span class="chip gold">${s.reg_id}</span></div>
+      <p class="hint">${s.shs_name} · SHS ${s.shs_level} · ${fmtDate(s.registered_on)}</p></button>`)}<//>`
+}
+
+function List({ rows, open }) {
+  const [q, setQ] = useState(''), [lvl, setLvl] = useState('all'), [st, setSt] = useState('all')
+  const needle = q.trim().toLowerCase()
+  const shown = rows.filter(s => (lvl === 'all' || s.shs_level === Number(lvl)) && (st === 'all' || s.registration_status === st) &&
+    (!needle || s.full_name.toLowerCase().includes(needle) || s.reg_id.toLowerCase().includes(needle) || s.shs_name.toLowerCase().includes(needle)))
+  const tab = (v, label) => html`<button key=${v} class=${'btn small' + (lvl === v ? '' : ' sec')} aria-pressed=${lvl === v} onClick=${() => setLvl(v)}>${label}</button>`
+  return html`<${React.Fragment}><h2>Students (${rows.length})</h2>
+    <label class="sr" htmlFor="q">Search students</label>
+    <input id="q" class="field search" type="search" placeholder="Search by name, registration ID or SHS" value=${q} onChange=${e => setQ(e.target.value)} />
+    <div class="btns seg">${tab('all', 'All')}${tab('1', 'SHS 1')}${tab('2', 'SHS 2')}${tab('3', 'SHS 3')}</div>
+    <label class="sr" htmlFor="st">Filter by status</label>
+    <select id="st" class="field" value=${st} onChange=${e => setSt(e.target.value)}><option value="all">All statuses</option>${STATUSES.map(s => html`<option key=${s}>${s}</option>`)}</select>
+    ${!shown.length && html`<p class="hint">${rows.length ? 'No student matches your search.' : 'No students registered yet.'}</p>`}
+    ${shown.map(s => html`<button key=${s.id} class="card item person" onClick=${() => open(s.id)}><div class="row"><span class="who"><i class="av">${ini(s.full_name)}</i><b>${s.full_name}</b></span><span class="chip gold">${s.reg_id}</span></div>
+      <p class="hint">${s.shs_name} · SHS ${s.shs_level}</p><div><span class=${'chip ' + statusClass(s.registration_status)}>${s.registration_status}</span></div></button>`)}<//>`
+}
+
+function Kv({ k, children }) { return html`<div class="kv"><span>${k}</span><span>${children}</span></div>` }
+
+function Profile({ s, back, edit, refresh, openRec }) {
+  const [status, setStatus] = useState(s.registration_status), [msg, setMsg] = useState(''), [err, setErr] = useState(''), [busy, setBusy] = useState(false), [copied, setCopied] = useState(false)
+  useEffect(() => setStatus(s.registration_status), [s.registration_status])
+  async function save() { setErr(''); setMsg(''); setBusy(true); try { await Students.setStatus(s.id, status); setMsg('Status updated.'); await refresh() } catch (e) { setErr(e.message) } finally { setBusy(false) } }
+  async function copy() {
+    try { await navigator.clipboard.writeText(s.gps_address) } catch (e) { const t = document.createElement('textarea'); t.value = s.gps_address; document.body.appendChild(t); t.select(); try { document.execCommand('copy') } catch (e2) {} t.remove() }
+    setCopied(true); setTimeout(() => setCopied(false), 2000)
+  }
+  const link = (p) => html`<a href=${tel(p)}>${p}</a>`
+  return html`<${React.Fragment}>
+    <button class="btn sec small back" onClick=${back}><${Icon} n="back" s=${18} />Back</button>
+    <div class="card profile-hero"><div class="row"><div class="who"><i class="av lg">${ini(s.full_name)}</i><div><h2>${s.full_name}</h2><p class="hint">${s.shs_name} · SHS ${s.shs_level}</p></div></div><span class="chip gold">${s.reg_id}</span></div>
+      <div style=${{ marginTop: '6px' }}><span class=${'chip ' + statusClass(s.registration_status)}>${s.registration_status}</span></div></div>
+    <button class="btn gold" onClick=${edit}>Edit profile</button>
+    <${StudentScores} sid=${s.id} openRec=${openRec} />
+    <div class="card"><h3>Personal information</h3><${Kv} k="Gender">${s.gender}<//><${Kv} k="Date of birth">${fmtDate(s.date_of_birth)}<//><${Kv} k="Age">${ageOf(s.date_of_birth)} years<//></div>
+    <div class="card"><h3>Academic information</h3><${Kv} k="Current SHS">${s.shs_name}<//><${Kv} k="Level">SHS ${s.shs_level}<//></div>
+    <div class="card"><h3>Student contact</h3><${Kv} k="Phone">${link(s.student_phone)}<//>
+      <${Kv} k="Email">${s.student_email ? html`<a href=${'mailto:' + s.student_email}>${s.student_email}</a>` : html`<span class="opt">Not given</span>`}<//></div>
+    <div class="card"><h3>Parent or guardian</h3><${Kv} k="Name">${s.guardian_name}<//><${Kv} k="Relationship">${s.guardian_relationship}<//><${Kv} k="Primary phone">${link(s.guardian_phone)}<//>
+      <${Kv} k="Alternative phone">${s.guardian_alt_phone ? link(s.guardian_alt_phone) : html`<span class="opt">Not given</span>`}<//>
+      <${Kv} k="Email">${s.guardian_email ? html`<a href=${'mailto:' + s.guardian_email}>${s.guardian_email}</a>` : html`<span class="opt">Not given</span>`}<//></div>
+    <div class="card"><h3>Residential information</h3><${Kv} k="Address">${s.residential_address}<//>
+      <${Kv} k="GhanaPost GPS"><span>${s.gps_address}</span><//>
+      <button class="btn sec small" style=${{ marginTop: '8px' }} onClick=${copy}>${copied ? 'Copied' : 'Copy GPS address'}</button></div>
+    <div class="card stack"><h3>Registration details</h3><${Kv} k="Registration ID">${s.reg_id}<//><${Kv} k="Registered on">${fmtDate(s.registered_on)}<//>
+      <div><label class="label" htmlFor="status">Registration status</label><select id="status" class="field" value=${status} onChange=${e => setStatus(e.target.value)}>${STATUSES.map(x => html`<option key=${x}>${x}</option>`)}</select></div>
+      ${err && html`<div class="err" role="alert">${err}</div>`}${msg && html`<div class="warn" role="status">${msg}</div>`}
+      <button class="btn" disabled=${busy || status === s.registration_status} onClick=${save}>${busy ? 'Saving…' : 'Update status'}</button></div><//>`
+}
+
+function Form({ existing, rows, done, cancel, open }) {
+  const blank = { fullName: '', gender: '', dob: '', shsName: '', shsLevel: '', address: '', gps: '', phone: '', email: '', gName: '', gRel: '', gPhone: '', gAlt: '', gEmail: '' }
+  const [f, setF] = useState(existing ? toForm(existing) : blank), [error, setError] = useState(''), [busy, setBusy] = useState(false), [dup, setDup] = useState(null), [created, setCreated] = useState(null)
+  const set = (k, v) => setF(p => ({ ...p, [k]: v }))
+  const today = new Date().toISOString().slice(0, 10), age = f.dob ? ageOf(f.dob) : null
+  const input = (k, label, o = {}) => html`<div><label class="label" htmlFor=${k}>${label}${o.opt ? html` <span class="opt">(optional)</span>` : ''}</label>
+    <input id=${k} class="field" type=${o.type || 'text'} inputMode=${o.mode} autoComplete="off" max=${o.max} value=${f[k]} onChange=${e => set(k, e.target.value)} />${o.hint && html`<p class="hint" style=${{ marginTop: '4px' }}>${o.hint}</p>`}</div>`
+  function problem() {
+    if (!f.fullName.trim()) return 'Enter the student’s full name.'
+    if (!f.gender) return 'Choose the student’s gender.'
+    if (age === null) return 'Enter a valid date of birth.'
+    if (!f.shsName.trim()) return 'Enter the name of the student’s current SHS.'
+    if (!f.shsLevel) return 'Choose the current SHS level.'
+    if (!f.address.trim()) return 'Enter the residential address.'
+    if (!GPS.test(tidyGps(f.gps))) return 'Enter a valid GhanaPost GPS address, for example AK-039-5028.'
+    if (!PHONE.test(f.phone.trim())) return 'Enter a valid phone number for the student, using digits, spaces, + or -.'
+    if (f.email.trim() && !EMAIL.test(f.email.trim())) return 'The student’s email address does not look right.'
+    if (!f.gName.trim()) return 'Enter the parent or guardian’s full name.'
+    if (!f.gRel) return 'Choose the parent or guardian’s relationship to the student.'
+    if (!PHONE.test(f.gPhone.trim())) return 'Enter a valid primary phone number for the parent or guardian.'
+    if (f.gAlt.trim() && !PHONE.test(f.gAlt.trim())) return 'The alternative phone number does not look right.'
+    if (f.gEmail.trim() && !EMAIL.test(f.gEmail.trim())) return 'The parent or guardian’s email address does not look right.'
+    return ''
+  }
+  async function submit(e) {
+    e.preventDefault(); setError(''); setDup(null)
+    const p = problem(); if (p) return setError(p)
+    const same = rows.find(s => s.id !== (existing && existing.id) && s.date_of_birth === f.dob && norm(s.full_name) === norm(f.fullName))
+    if (same) { setDup(same); return setError('This student is already registered. Returning students are not registered again.') }
+    setBusy(true)
+    try { if (existing) { await Students.edit(existing.id, f); await done(existing.id) } else { setCreated(await Students.create(f)); await done(null) } }
+    catch (err) { setError(err.message) } finally { setBusy(false) }
+  }
+  if (created) return html`<${React.Fragment}><div class="card" role="status"><p class="hint">Student registered</p><div class="big">${created.reg_id}</div><p class="hint">This is the student’s permanent registration ID.</p></div>
+    <button class="btn gold" onClick=${() => open(created.id)}>View profile</button><button class="btn sec" onClick=${() => { setCreated(null); setF(blank) }}>Register another</button><//>`
+  return html`<form onSubmit=${submit}>
+    <h2>${existing ? 'Edit student profile' : 'Register a student'}</h2>
+    <p class="hint">Fields marked optional can be left empty. Everything else is required.</p>
+    ${error && html`<div class="err" role="alert">${error}${dup && html` <button type="button" class="link" style=${{ marginLeft: '6px', background: 'var(--card)', color: 'var(--ink)' }} onClick=${() => open(dup.id)}>Open ${dup.reg_id}</button>`}</div>`}
+    <h3>Student</h3>
+    ${input('fullName', 'Full name')}
+    <div><label class="label" htmlFor="gender">Gender</label><select id="gender" class="field" value=${f.gender} onChange=${e => set('gender', e.target.value)}><option value="">Choose</option><option>Male</option><option>Female</option></select></div>
+    ${input('dob', 'Date of birth', { type: 'date', max: today, hint: age !== null ? 'Age: ' + age + ' years (worked out automatically)' : 'Age is worked out automatically.' })}
+    ${input('shsName', 'Name of current SHS')}
+    <div><label class="label" htmlFor="shsLevel">Current SHS level</label><select id="shsLevel" class="field" value=${f.shsLevel} onChange=${e => set('shsLevel', e.target.value)}><option value="">Choose</option><option value="1">SHS 1</option><option value="2">SHS 2</option><option value="3">SHS 3</option></select></div>
+    ${input('address', 'Residential address')}
+    ${input('gps', 'GhanaPost GPS address', { hint: 'Format: two or three letters, then numbers, for example AK-039-5028. Keep this separate from the residential address.' })}
+    ${input('phone', 'Student’s phone number', { type: 'tel', mode: 'tel' })}
+    ${input('email', 'Student’s email address', { type: 'email', mode: 'email', opt: true })}
+    <h3>Parent or guardian</h3>
+    ${input('gName', 'Full name')}
+    <div><label class="label" htmlFor="gRel">Relationship to the student</label><select id="gRel" class="field" value=${f.gRel} onChange=${e => set('gRel', e.target.value)}><option value="">Choose</option><option>Mother</option><option>Father</option><option>Guardian</option><option>Other</option></select></div>
+    ${input('gPhone', 'Primary contact number', { type: 'tel', mode: 'tel' })}
+    ${input('gAlt', 'Alternative contact number', { type: 'tel', mode: 'tel', opt: true })}
+    ${input('gEmail', 'Email address', { type: 'email', mode: 'email', opt: true })}
+    <button class="btn gold" disabled=${busy}>${busy ? 'Saving…' : existing ? 'Save changes' : 'Register student'}</button>
+    <button type="button" class="btn sec" onClick=${cancel}>Cancel</button></form>`
+}
+
+function RecordsList({ items, error, go }) {
+  const [k, setK] = useState('all'), [q, setQ] = useState('')
+  const needle = q.trim().toLowerCase()
+  const shown = (items || []).filter(a => (k === 'all' || a.kind === k) && (!needle || a.title.toLowerCase().includes(needle) || a.subject.toLowerCase().includes(needle)))
+  const tab = (v, label) => html`<button key=${v} class=${'btn small' + (k === v ? '' : ' sec')} aria-pressed=${k === v} onClick=${() => setK(v)}>${label}</button>`
+  return html`<${React.Fragment}><h2>Scores & records</h2>
+    <p class="hint">Record tests, assignments and exercises, then enter each student’s score.</p>
+    <button class="btn gold" onClick=${() => go('newrec')}><${Icon} n="plus" s=${18} />New test, assignment or exercise</button>
+    ${error && html`<div class="err" role="alert">${error}</div>`}
+    <div class="btns seg">${tab('all', 'All')}${tab('Test', 'Tests')}${tab('Assignment', 'Assignments')}${tab('Exercise', 'Exercises')}</div>
+    <label class="sr" htmlFor="rq">Search records</label>
+    <input id="rq" class="field search" type="search" placeholder="Search by title or subject" value=${q} onChange=${e => setQ(e.target.value)} />
+    ${!items && !error && html`<p class="hint">Loading…</p>`}
+    ${items && !shown.length && html`<p class="hint">${items.length ? 'Nothing matches your filter.' : 'Nothing recorded yet. Start by adding a test, assignment or exercise.'}</p>`}
+    ${shown.map(a => html`<button key=${a.id} class="card item" onClick=${() => go('rec', a.id)}>
+      <div class="row"><b>${a.title}</b><span class=${'chip ' + kindClass(a.kind)}>${a.kind}</span></div>
+      <p class="hint">${a.subject} · ${a.shsLevel ? 'SHS ' + a.shsLevel : 'All levels'} · ${fmtDate(a.givenOn)} · out of ${n2(a.maxScore)}</p>
+      <div><span class="chip">${a.recorded} score${a.recorded === 1 ? '' : 's'} recorded</span>${a.average != null && html`<span class="chip ok">Average ${pct(a.average, a.maxScore)}%</span>`}</div></button>`)}<//>`
+}
+
+function AssessmentForm({ existing, done, cancel }) {
+  const today = new Date().toISOString().slice(0, 10)
+  const [f, setF] = useState(existing ? { title: existing.title, kind: existing.kind, subject: existing.subject, shsLevel: existing.shsLevel ? String(existing.shsLevel) : '', maxScore: n2(existing.maxScore), givenOn: existing.givenOn, notes: existing.notes || '' }
+    : { title: '', kind: '', subject: '', shsLevel: '', maxScore: '', givenOn: today, notes: '' })
+  const [error, setError] = useState(''), [busy, setBusy] = useState(false)
+  const set = (k, v) => setF(p => ({ ...p, [k]: v }))
+  async function submit(e) {
+    e.preventDefault(); setError('')
+    if (!f.title.trim()) return setError('Enter a title, for example “Week 2 Algebra Test”.')
+    if (!f.kind) return setError('Choose whether this is a test, assignment or exercise.')
+    if (!f.subject.trim()) return setError('Enter the subject.')
+    if (!(Number(f.maxScore) > 0)) return setError('Enter the maximum score, for example 20 or 100.')
+    if (!f.givenOn) return setError('Enter the date it was given.')
+    setBusy(true)
+    try { const row = existing ? await Records.update(existing.id, f) : await Records.create(f); await done(row.id) } catch (err) { setError(err.message) } finally { setBusy(false) }
+  }
+  const input = (k, label, o = {}) => html`<div><label class="label" htmlFor=${'a_' + k}>${label}${o.opt ? html` <span class="opt">(optional)</span>` : ''}</label>
+    <input id=${'a_' + k} class="field" type=${o.type || 'text'} inputMode=${o.mode} step=${o.step} min=${o.min} autoComplete="off" placeholder=${o.ph} value=${f[k]} onChange=${e => set(k, e.target.value)} /></div>`
+  return html`<form onSubmit=${submit}>
+    <h2>${existing ? 'Edit details' : 'New test, assignment or exercise'}</h2>
+    ${error && html`<div class="err" role="alert">${error}</div>`}
+    <div><label class="label" htmlFor="a_kind">Type</label><select id="a_kind" class="field" value=${f.kind} onChange=${e => set('kind', e.target.value)}><option value="">Choose</option>${KINDS.map(k => html`<option key=${k}>${k}</option>`)}</select></div>
+    ${input('title', 'Title', { ph: 'e.g. Week 2 Algebra Test' })}
+    ${input('subject', 'Subject', { ph: 'e.g. Core Mathematics' })}
+    <div><label class="label" htmlFor="a_lvl">SHS level</label><select id="a_lvl" class="field" value=${f.shsLevel} onChange=${e => set('shsLevel', e.target.value)}><option value="">All levels</option><option value="1">SHS 1</option><option value="2">SHS 2</option><option value="3">SHS 3</option></select>
+      <p class="hint" style=${{ marginTop: '4px' }}>Only students at this level are listed when entering scores.</p></div>
+    <div class="grid">${input('maxScore', 'Maximum score', { type: 'number', mode: 'decimal', step: 'any', min: '0' })}${input('givenOn', 'Date given', { type: 'date' })}</div>
+    ${input('notes', 'Notes', { opt: true })}
+    <button class="btn gold" disabled=${busy}>${busy ? 'Saving…' : existing ? 'Save changes' : 'Create and enter scores'}</button>
+    <button type="button" class="btn sec" onClick=${cancel}>Cancel</button></form>`
+}
+
+function Gradebook({ a, students, back, edit, changed, removed, openStudent }) {
+  const [saved, setSaved] = useState(null), [vals, setVals] = useState({}), [error, setError] = useState(''), [msg, setMsg] = useState(''), [busy, setBusy] = useState(false), [q, setQ] = useState('')
+  const toVals = list => { const v = {}; list.forEach(x => { v[x.studentId] = { score: n2(x.score), remarks: x.remarks || '' } }); return v }
+  useEffect(() => { Records.scores(a.id).then(l => { setSaved(toVals(l)); setVals(toVals(l)) }).catch(e => setError(e.message)) }, [a.id])
+  const max = Number(a.maxScore)
+  const list = students.filter(s => (saved && saved[s.id]) || ((!a.shsLevel || s.shs_level === a.shsLevel) && s.registration_status !== 'Withdrawn'))
+    .sort((x, y) => x.full_name.localeCompare(y.full_name))
+  const needle = q.trim().toLowerCase()
+  const shown = list.filter(s => !needle || s.full_name.toLowerCase().includes(needle) || s.reg_id.toLowerCase().includes(needle))
+  const get = id => vals[id] || { score: '', remarks: '' }
+  const setV = (id, k, v) => { setMsg(''); setVals(p => ({ ...p, [id]: { ...get(id), ...p[id], [k]: v } })) }
+  const orig = id => (saved && saved[id]) || { score: '', remarks: '' }
+  const dirty = list.filter(s => { const v = get(s.id), o = orig(s.id); return v.score.trim() !== o.score || v.remarks.trim() !== o.remarks })
+  const nums = Object.values(saved || {}).map(v => Number(v.score))
+  const avg = nums.length ? nums.reduce((t, n) => t + n, 0) / nums.length : null
+  async function save() {
+    setError(''); setMsg('')
+    const bad = dirty.find(s => { const t = get(s.id).score.trim(); return t !== '' && !(Number(t) >= 0 && Number(t) <= max) })
+    if (bad) return setError(`${bad.full_name}’s score must be a number from 0 to ${n2(max)}.`)
+    setBusy(true)
+    try {
+      const l = await Records.saveScores(a.id, dirty.map(s => ({ studentId: s.id, score: get(s.id).score.trim() || null, remarks: get(s.id).remarks })))
+      setSaved(toVals(l)); setVals(toVals(l)); setMsg('Scores saved.'); changed()
+    } catch (e) { setError(e.message) } finally { setBusy(false) }
+  }
+  async function del() {
+    if (!confirm(`Delete “${a.title}” and all its recorded scores? This cannot be undone.`)) return
+    setBusy(true); try { await Records.remove(a.id); await removed() } catch (e) { setError(e.message); setBusy(false) }
+  }
+  return html`<${React.Fragment}>
+    <button class="btn sec small back" onClick=${back}><${Icon} n="back" s=${18} />Back</button>
+    <div class="card profile-hero"><div class="row"><div><h2>${a.title}</h2><p class="hint">${a.subject} · ${a.shsLevel ? 'SHS ' + a.shsLevel : 'All levels'} · ${fmtDate(a.givenOn)}</p></div><span class=${'chip ' + kindClass(a.kind)}>${a.kind}</span></div>
+      ${a.notes && html`<p class="hint" style=${{ marginTop: '6px' }}>${a.notes}</p>`}</div>
+    <div class="grid five">
+      <div class="stat"><b>${n2(max)}</b><span>Maximum score</span></div>
+      <div class="stat"><b>${nums.length}/${list.length}</b><span>Scores recorded</span></div>
+      <div class="stat"><b>${avg == null ? '–' : pct(avg, max) + '%'}</b><span>Class average</span></div>
+      <div class="stat"><b>${nums.length ? n2(Math.max(...nums)) : '–'}</b><span>Highest</span></div>
+      <div class="stat"><b>${nums.length ? n2(Math.min(...nums)) : '–'}</b><span>Lowest</span></div></div>
+    <div class="btns"><button class="btn sec small" onClick=${edit}>Edit details</button><button class="btn sec small" disabled=${busy} onClick=${del}>Delete</button></div>
+    <h2 style=${{ marginTop: '6px' }}>Enter scores</h2>
+    <p class="hint">Type each score out of ${n2(max)}. Leave a box empty if the student has no score. Remarks are optional.</p>
+    ${error && html`<div class="err" role="alert">${error}</div>`}
+    ${!saved && !error && html`<p class="hint">Loading scores…</p>`}
+    ${saved && html`<${React.Fragment}>
+      <label class="sr" htmlFor="gq">Search students</label>
+      <input id="gq" class="field search" type="search" placeholder="Search by name or registration ID" value=${q} onChange=${e => setQ(e.target.value)} />
+      ${!list.length && html`<p class="hint">No ${a.shsLevel ? 'SHS ' + a.shsLevel + ' ' : ''}students are registered yet.</p>`}
+      ${list.length > 0 && html`<div class="card">${shown.map(s => { const v = get(s.id), t = v.score.trim(), ok = t !== '' && Number(t) >= 0 && Number(t) <= max
+        return html`<div key=${s.id} class="srow">
+          <div><button type="button" class="item" style=${{ background: 'none', border: 0, padding: 0, fontWeight: 700 }} onClick=${() => openStudent(s.id)}>${s.full_name}</button>
+            <div class="pct">${s.reg_id}${ok ? ' · ' + pct(t, max) + '%' : ''}</div></div>
+          <div><label class="sr" htmlFor=${'sc_' + s.id}>Score for ${s.full_name}</label>
+            <input id=${'sc_' + s.id} class="field" type="number" inputMode="decimal" step="any" min="0" max=${max} placeholder="–" value=${v.score} onChange=${e => setV(s.id, 'score', e.target.value)} /></div>
+          <div class="rm"><label class="sr" htmlFor=${'rm_' + s.id}>Remarks for ${s.full_name}</label>
+            <input id=${'rm_' + s.id} class="field" style=${{ minHeight: '40px', fontSize: '14px' }} placeholder="Remarks (optional)" value=${v.remarks} onChange=${e => setV(s.id, 'remarks', e.target.value)} /></div></div>` })}</div>`}
+      ${msg && html`<div class="warn" role="status">${msg}</div>`}
+      <button class="btn gold stick" disabled=${busy || !dirty.length} onClick=${save}>${busy ? 'Saving…' : dirty.length ? `Save ${dirty.length} change${dirty.length === 1 ? '' : 's'}` : 'All scores saved'}</button><//>`}<//>`
+}
+
+function StudentScores({ sid, openRec }) {
+  const [list, setList] = useState(null), [error, setError] = useState('')
+  useEffect(() => { Records.forStudent(sid).then(setList).catch(e => setError(e.message)) }, [sid])
+  const avgOf = l => l.length ? Math.round(l.reduce((t, x) => t + Number(x.score) / Number(x.maxScore), 0) / l.length * 1000) / 10 : null
+  return html`<div class="card stack"><h3>Scores: tests, assignments & exercises</h3>
+    ${error && html`<div class="err">${error}</div>`}
+    ${!list && !error && html`<p class="hint">Loading…</p>`}
+    ${list && !list.length && html`<p class="hint">No scores recorded for this student yet.</p>`}
+    ${list && list.length > 0 && html`<${React.Fragment}>
+      <div class="grid">${[['Overall', list], ...KINDS.map(k => [k + 's', list.filter(x => x.kind === k)])].map(([l, xs]) => html`<div key=${l} class="stat"><b>${xs.length ? avgOf(xs) + '%' : '–'}</b><span>${l} average${xs.length ? ' (' + xs.length + ')' : ''}</span></div>`)}</div>
+      <div>${list.map(x => html`<div key=${x.assessmentId} class="kv"><span><button type="button" class="item" style=${{ background: 'none', border: 0, padding: 0, color: 'var(--ink)', fontWeight: 600 }} onClick=${() => openRec(x.assessmentId)}>${x.title}</button>
+        <br/><span class="pct">${x.kind} · ${x.subject} · ${fmtDate(x.givenOn)}${x.remarks ? ' · ' + x.remarks : ''}</span></span>
+        <span>${n2(x.score)}/${n2(x.maxScore)}<br/><span class="pct">${pct(x.score, x.maxScore)}%</span></span></div>`)}</div><//>`}</div>`
+}
+
+// ---------- App ----------
+function App() {
+  const [phase, setPhase] = useState('loading'), [notice, setNotice] = useState(''), [rows, setRows] = useState([]), [route, setRoute] = useState({ r: 'dashboard' }), [error, setError] = useState('')
+  const [recs, setRecs] = useState(null), [recErr, setRecErr] = useState('')
+  const loadRecs = useCallback(async () => { try { setRecs(await Records.list()); setRecErr('') } catch (e) { setRecErr('Could not load records: ' + e.message) } }, [])
+  const load = useCallback(async () => { try { setRows(await Students.list()); setError('') } catch (e) { setError('Could not load students: ' + e.message) } }, [])
+  const enter = useCallback(async session => {
+    if (!session) { setPhase('out'); return }
+    if (!(await Auth.isAdmin())) { await Auth.signOut(); setNotice('This account is not authorised to use GMC Academy.'); setPhase('out'); return }
+    await load(); loadRecs(); setRoute({ r: 'dashboard' }); setPhase('in')
+  }, [load, loadRecs])
+  useEffect(() => {
+    sb.auth.getSession().then(({ data }) => enter(data.session))
+    const { data } = sb.auth.onAuthStateChange(ev => { if (ev === 'SIGNED_OUT') setPhase('out') })
+    const pop = e => setRoute(e.state || { r: 'dashboard' })
+    window.addEventListener('popstate', pop)
+    return () => { data.subscription.unsubscribe(); window.removeEventListener('popstate', pop) }
+  }, [enter])
+  const go = (r, id) => { const s = { r, id }; history.pushState(s, ''); setRoute(s); window.scrollTo(0, 0) }
+  const open = id => go('profile', id)
+  const out = async () => { await Auth.signOut(); setNotice(''); setRows([]); setRecs(null); setPhase('out') }
+  if (phase === 'loading') return html`<div class="boot"><div class="spin"></div><p class="hint">Loading GMC Academy…</p></div>`
+  if (phase === 'out') return html`<${Login} onSignedIn=${async s => { setNotice(''); await enter(s) }} notice=${notice} />`
+  const s = route.id && rows.find(x => x.id === route.id)
+  const openRec = id => go('rec', id)
+  const a = ['rec', 'editrec'].includes(route.r) && recs && recs.find(x => x.id === route.id)
+  const tab = route.r === 'students' || route.r === 'profile' ? 'students' : route.r === 'form' ? 'register' : ['records', 'rec', 'newrec', 'editrec'].includes(route.r) ? 'records' : 'dashboard'
+  let body
+  if (route.r === 'profile' && s) body = html`<${Profile} key=${s.id} s=${s} back=${() => history.back()} edit=${() => go('edit', s.id)} refresh=${load} openRec=${openRec} />`
+  else if (route.r === 'records') body = html`<${RecordsList} items=${recs} error=${recErr} go=${go} />`
+  else if (route.r === 'newrec') body = html`<${AssessmentForm} done=${async id => { await loadRecs(); history.replaceState({ r: 'rec', id }, ''); setRoute({ r: 'rec', id }) }} cancel=${() => history.back()} />`
+  else if (route.r === 'editrec' && a) body = html`<${AssessmentForm} existing=${a} done=${async () => { await loadRecs(); history.back() }} cancel=${() => history.back()} />`
+  else if (route.r === 'rec' && a) body = html`<${Gradebook} key=${a.id} a=${a} students=${rows} back=${() => history.back()} edit=${() => go('editrec', a.id)} changed=${loadRecs} removed=${async () => { await loadRecs(); go('records') }} openStudent=${open} />`
+  else if (['rec', 'editrec'].includes(route.r) && !recs) body = html`<p class="hint">${recErr || 'Loading…'}</p>`
+  else if (route.r === 'edit' && s) body = html`<${Form} existing=${s} rows=${rows} done=${async id => { await load(); history.back() }} cancel=${() => history.back()} open=${open} />`
+  else if (route.r === 'form') body = html`<${Form} rows=${rows} done=${load} cancel=${() => go('dashboard')} open=${open} />`
+  else if (route.r === 'students') body = html`<${List} rows=${rows} open=${open} />`
+  else body = html`<${Dashboard} rows=${rows} open=${open} go=${go} />`
+  const nav = [['dashboard', 'Dashboard', () => go('dashboard')], ['students', 'Students', () => go('students')], ['register', 'Register', () => go('form')], ['records', 'Scores', () => go('records')]]
+  return html`<div class="page"><div class="hdr"><div class="brand"><span class="mark"><${Icon} n="cap" s=${22} /></span><span>GMC Academy<small>SHS VACATION CLASSES</small></span></div><button class="link" onClick=${out}><${Icon} n="logout" s=${16} />Sign out</button></div>
+    <div class="main">${error && html`<div class="err">${error}</div>`}${body}</div>
+    <nav>${nav.map(([id, label, fn]) => html`<button key=${id} class=${tab === id ? 'on' : ''} aria-current=${tab === id ? 'page' : undefined} onClick=${fn}><${Icon} n=${{ dashboard: 'home', students: 'users', register: 'userPlus', records: 'clip' }[id]} s=${21} /><span>${label}</span></button>`)}</nav></div>`
+}
+ReactDOM.createRoot(document.getElementById('root')).render(html`<${App} />`)
+</script>
+</body>
+</html>
